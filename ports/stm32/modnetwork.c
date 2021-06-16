@@ -48,8 +48,12 @@
 #include "extmod/network_cyw43.h"
 #include "drivers/cyw43/cyw43.h"
 
+#ifndef MICROPY_PY_LWIP_POLLING_INTERVAL
+#define MICROPY_PY_LWIP_POLLING_INTERVAL (128)
+#endif
+
 // Poll lwIP every 128ms
-#define LWIP_TICK(tick) (((tick) & ~(SYSTICK_DISPATCH_NUM_SLOTS - 1) & 0x7f) == 0)
+#define LWIP_TICK(tick) (((tick) & ~(SYSTICK_DISPATCH_NUM_SLOTS - 1) & (MICROPY_PY_LWIP_POLLING_INTERVAL-1)) == 0)
 
 u32_t sys_now(void) {
     return mp_hal_ticks_ms();
